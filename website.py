@@ -26,88 +26,143 @@ def gpt_text_response(prompt, selected_model):
     except Exception as e:
         return f"An error occurred with G4F API: {e}"  # Error message
 
-# Apply custom CSS for a modern UI
+# Apply custom CSS for a futuristic, modern design
 st.markdown(
     """
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            color: #333333;
-        }
+        /* Body and container styling */
         .stApp {
-            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            padding: 0;
         }
+
+        /* Main container */
         .main-container {
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
-            padding: 2rem;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
         }
+
+        /* Title styling */
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #34495e;
+            text-align: center;
+            margin-top: -10px;
+            font-weight: 500;
+        }
+
+        /* Model selector and prompt input styling */
+        .stSelectbox select, .stTextArea textarea {
+            border-radius: 12px;
+            font-size: 16px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .stSelectbox select:hover, .stTextArea textarea:hover {
+            border-color: #3498db;
+        }
+
+        /* Button styling */
         .stButton button {
-            background-color: #4CAF50;
+            background: #3498db;
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 10px 20px;
             font-size: 16px;
+            padding: 14px 30px;
             cursor: pointer;
-            transition: all 0.3s ease-in-out;
+            transition: 0.3s ease;
         }
         .stButton button:hover {
-            background-color: #45a049;
+            background: #2980b9;
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
         }
-        .stTextArea textarea {
-            border-radius: 10px;
+
+        /* Response box styling */
+        .response-box {
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 12px;
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+            white-space: pre-wrap;
+            margin-top: 2rem;
             font-size: 16px;
-            padding: 12px;
+            font-weight: 500;
+            color: #2c3e50;
+            transition: all 0.3s ease;
         }
-        .stSelectbox select {
-            border-radius: 10px;
-            font-size: 16px;
-            padding: 8px;
+
+        /* Animation for response */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
-        h1 {
-            text-align: center;
-            color: #333333;
-            font-weight: bold;
+
+        .response-box {
+            animation: fadeIn 0.8s ease-in-out;
         }
-        p {
-            text-align: center;
-            font-size: 18px;
-            color: #555555;
-        }
+
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 # Layout setup
-with st.container():
-    st.markdown('<div class="main-container">', unsafe_allow_html=True)
-    st.title("✨ AI Text Generator")
-    st.markdown(
-        "Enter a prompt and select a model to generate AI-powered text. This tool uses advanced models to help you craft responses."
-    )
+st.markdown('<div class="main-container">', unsafe_allow_html=True)
 
-    # User inputs
-    with st.form(key="text_generator_form"):
-        prompt = st.text_area(
-            "Enter your prompt:",
-            placeholder="Type your description or text for generation...",
-            height=150,
-        )
-        selected_model = st.selectbox("Choose a model:", options=available_models)
-        generate_button = st.form_submit_button(label="Generate")
+# Header
+st.markdown('<h1>🌟 AI Text Generator 🌟</h1>', unsafe_allow_html=True)
+st.markdown(
+    '<h2>Enter a prompt, choose a model, and let the AI generate your content.</h2>',
+    unsafe_allow_html=True,
+)
 
-    if generate_button:
-        if prompt.strip() == "":
-            st.error("⚠️ Please enter a prompt before generating!")
-        else:
-            with st.spinner("🔄 Generating response..."):
-                response = gpt_text_response(prompt, selected_model)
-            st.success("✅ Generated Response:")
-            st.text_area("AI Response", value=response, height=200, disabled=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+# Input fields
+prompt = st.text_area(
+    "Enter your prompt:",
+    placeholder="Type something creative or descriptive...",
+    height=180,
+    key="prompt_input",
+)
+selected_model = st.selectbox(
+    "Choose a model:",
+    options=available_models,
+    key="model_selector",
+)
+
+# Action button for text generation
+if st.button("Generate Response", key="generate_button"):
+    if not prompt.strip():
+        st.error("⚠️ Please enter a valid prompt!")
+    else:
+        with st.spinner("🔄 Generating AI response..."):
+            response = gpt_text_response(prompt, selected_model)
+
+        # Displaying response with smooth animation and polished box
+        st.markdown('<div class="response-box">', unsafe_allow_html=True)
+        st.write(response)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+# Closing container
+st.markdown('</div>', unsafe_allow_html=True)
